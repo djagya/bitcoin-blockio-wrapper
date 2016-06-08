@@ -9,7 +9,7 @@ class Controller
     /** How much to collect from users transactions */
     const FEE_PERCENT = 1;
     /** Address where we send collected from transactions fee */
-    const FEE_ADDRESS = '2N7bip9cva9GnQx8simzn5cTUY2dNAk47Gb';
+    const FEE_ADDRESS = '2NGXbdMNkVpprrFM34nSh7VQnAteagwncak';
 
     /** Transaction fee that will be charged by sender, approx 5 Cents */
     const TRANSACTION_FEE = 0.0001;
@@ -90,7 +90,7 @@ class Controller
         }, $wallet->addresses);
         $sourceAddresses = implode(',', $sourceAddresses);
 
-        $fee = $this->getOurFee($amount);
+        $fee = sprintf('%f', $this->getOurFee($amount));
 
         // Prepare amounts: user operation + send our fee to our address.
         $amounts = implode(',', [$amount, $fee]);
@@ -123,7 +123,8 @@ class Controller
 
     private function getOurFee($amount)
     {
-        $fee = $amount / 100 * self::FEE_PERCENT;
+        // We have to add transaction fee, because our fee will be sent in separate transaction.
+        $fee = self::TRANSACTION_FEE + ($amount / 100 * self::FEE_PERCENT);
 
         return $fee;
     }
