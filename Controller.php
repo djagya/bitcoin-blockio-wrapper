@@ -28,9 +28,7 @@ class Controller
      */
     public function getUserWallet($userId)
     {
-        // Disabled for gh-pages
-//        $labels = implode(',', $this->generateLabels($userId));
-        $labels = $userId;
+        $labels = implode(',', $this->generateLabels($userId));
         $result = $this->_blockio->get_address_balance(['labels' => $labels]);
 
         if ($result->status === 'fail') {
@@ -46,22 +44,21 @@ class Controller
      * Creates two addresses for user - public and private
      * @param $userId
      * @return Wallet
-     * @throws HttpException
+     * @throws Exception
      */
     public function createUserAddresses($userId)
     {
         $addresses = [];
         foreach ($this->generateLabels($userId) as $label) {
-            $result = $this->_blockio->get_new_address(['label' => $label]);
-
-            // If address is already created - skip fail response,
-            // except those cases when error message is not about existing address
-            if ($result->status === 'fail') {
-                if (strpos($result->data->error_message, 'already exists') === false) {
-                    throw new HttpException($result->data->error_message);
-                }
-            } else {
+            try {
+                $result = $this->_blockio->get_new_address(['label' => $label]);
                 $addresses[] = Address::instantiate($result->data);
+            } catch (\Exception $e) {
+                // If address is already created - skip fail response,
+                // except those cases when error message is not about existing address
+                if (strpos($e->getMessage(), 'already exists') === false) {
+                    throw $e;
+                }
             }
         }
 
@@ -96,17 +93,14 @@ class Controller
         $fee = $this->getOurFee($amount);
 
         // Prepare amounts: user operation + send our fee to our address.
-        $amounts = [$amount, $fee];
-        $toAddresses = [$toAddress, self::FEE_ADDRESS];
+        $amounts = implode(',', [$amount, $fee]);
+        $toAddresses = implode(',', [$toAddress, self::FEE_ADDRESS]);
 
-        $result = $this->_blockio->withdraw_from_addresses([
+        $this->_blockio->withdraw_from_addresses([
             'amounts' => $amounts,
             'from_addresses' => $sourceAddresses,
             'to_addresses' => $toAddresses,
         ]);
-        if ($result->status === 'fail') {
-            throw new HttpException('Error by sending the amount: ' . print_r($result->data, true));
-        }
 
         return true;
     }
