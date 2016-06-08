@@ -12,41 +12,17 @@ var_dump($balance);
 echo "Confirmed Balance: " . $balance->data->available_balance . "\n";
 
 // todo: request pass every 5 minutes on the transactions page OR transaction
-
-// todo: archive addresses on user delete
 // send fees to the 'default' address OR to another wallet (better)
 
-// FIXME: just info.
-// Wallet - set of addresses with the same part of the label for user.
-// Allow max 3-4 addresses for user, where one will be a public.
-// Constant minimal transaction fee - 0.0001 BTC =  5 cents
-// Minimal value to send - 0.00002 BTC
-// + 1% fee
-
-// TODO:
-// get_new_address - for new addresses. label must be unique
-if (false) {
-    $address = $block_io->get_new_address(['label' => 'user_id_1_addr1']);
-    $address2 = $block_io->get_new_address(['label' => 'user_id_1_addr2']);
-}
-$address3 = $block_io->get_new_address();
-var_dump($address3);
+// form with input for value and target address
+// below - text changed to include transaction fee and our fee, e.g.:
+// asdkdjgksdfgdsf, 0.5 - user inputs
+// will be sent 0.6 - 0.5 + 0.0001 + 1%
 
 
-//$balance = $block_io->get_balance(array('label' => 'default'));
-//echo $balance->data->available_balance . "\n";
 
 // Labels:
 //      $withdraw = $block_io->withdraw(array('amount' => '50.0', 'to_address' => 'WALLET-ADDRESS-HERE'));
-
-
-// TODO:
-//With Block.io, you can create wallet addresses for users inside your games, auction sites, stores, etc.
-//
-//To create a user's wallet on your account, create addresses for them using get_new_address. You should specify a sequence of labels for that user. For instance, if we wish to create a number of addresses for User A, we'd want to call get_new_address with label=userAx{address_number} as many times as wish to create a new address for User A.
-//
-//Once we have addresses for User A, we can query balances for their addresses, and send coins on the user's behalf.
-
 
 
 // TODO: instant operations: if target address is in our system (check with DB) - mark operation as instant:

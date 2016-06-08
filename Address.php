@@ -23,8 +23,10 @@ class Address
         $address = new self;
         $address->label = $rawData->label;
         $address->address = $rawData->address;
-        $address->availableBalance = (float)$rawData->available_balance;
-        $address->pendingReceivedBalance = (float)$rawData->pending_received_balance;
+        $address->availableBalance = isset($rawData->available_balance) ?
+            (float)$rawData->available_balance : 0;
+        $address->pendingReceivedBalance = isset($rawData->pending_received_balance) ?
+            (float)$rawData->pending_received_balance : 0;
 
         return $address;
     }

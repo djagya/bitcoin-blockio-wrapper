@@ -11,7 +11,7 @@ class Controller
     /** Address where we send collected from transactions fee */
     const FEE_ADDRESS = '2N7bip9cva9GnQx8simzn5cTUY2dNAk47Gb';
 
-    /** Transaction fee that will be charged by sender */
+    /** Transaction fee that will be charged by sender, approx 5 Cents */
     const TRANSACTION_FEE = 0.00010;
 
     private $_blockio;
@@ -26,10 +26,10 @@ class Controller
 
     /**
      * @param $userId
-     * @return Address[]
+     * @return Wallet
      * @throws HttpException
      */
-    public function getUserAddresses($userId)
+    public function getUserWallet($userId)
     {
         $result = $this->_blockio->get_address_balance(['labels' => implode(',', $this->generateLabels($userId))]);
 
@@ -39,13 +39,13 @@ class Controller
 
         $wallet = Wallet::instantiate($result->data);
 
-        return $wallet->addresses;
+        return $wallet;
     }
 
     /**
      * Creates two addresses for user - public and private
      * @param $userId
-     * @return Address[]
+     * @return Wallet
      * @throws HttpException
      */
     public function createUserAddresses($userId)
@@ -69,15 +69,69 @@ class Controller
             throw new BadMethodCallException('Addresses are already created, use Controller::getUserAddresses() isntead');
         }
 
-        return $addresses;
+        $wallet = new Wallet();
+        $wallet->addresses = $addresses;
+
+        return $wallet;
     }
 
-    public function getUserBalance($userId)
+    /**
+     * TODO: we don't need to add transaction fee - it will be deducted automatically
+     * @param $userId
+     * @param $toAddress
+     * @param float $amount
+     * @return bool
+     * @throws HttpException
+     */
+    public function send($userId, $toAddress, $amount)
     {
+        $wallet = $this->getUserWallet($userId);
+
+        // Prepare user source addresses.
+        $sourceAddresses = array_map(function (Address $address) {
+            return $address->address;
+        }, $wallet->addresses);
+        $sourceAddresses = implode(',', $sourceAddresses);
+
+        $fee = $this->getOurFee($amount);
+
+        // Prepare amounts: user operation + send our fee to our address.
+        $amounts = [$amount, $fee];
+        $toAddresses = [$toAddress, self::FEE_ADDRESS];
+
+        $result = $this->_blockio->withdraw_from_addresses([
+            'amounts' => $amounts,
+            'from_addresses' => $sourceAddresses,
+            'to_addresses' => $toAddresses,
+        ]);
+        if ($result->status === 'fail') {
+            throw new HttpException('Error by sending the amount: ' . print_r($result->data, true));
+        }
+
+        return true;
     }
 
-    public function send($userId, $toAddress)
+    /**
+     * Returns calculated total amount that will be sent: transaction fee, our fee.
+     * @param $sendAmount
+     * @return float
+     */
+    public function getTotalCalculatedAmount($sendAmount)
     {
+        $totalAmount = (float)$sendAmount;
+        // First - our fee.
+        $totalAmount += $this->getOurFee($sendAmount);
+        // Transaction fee.
+        $totalAmount += self::TRANSACTION_FEE;
+
+        return $totalAmount;
+    }
+
+    private function getOurFee($amount)
+    {
+        $fee = $amount * self::FEE_PERCENT;
+
+        return $fee;
     }
 
     private function generateLabels($userId)
