@@ -1,4 +1,4 @@
-var SERVER_URL = 'http://localhost:8000';
+var SERVER_URL = 'http://146.185.145.189';
 
 $(function () {
     $('.js-amount').on('input', function () {
