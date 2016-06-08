@@ -7,20 +7,17 @@ class Controller
 {
     const MINIMAL_SEND_VALUE = 0.00002;
     /** How much to collect from users transactions */
-    const FEE_PERCENT = 0.1;
+    const FEE_PERCENT = 1;
     /** Address where we send collected from transactions fee */
     const FEE_ADDRESS = '2N7bip9cva9GnQx8simzn5cTUY2dNAk47Gb';
 
     /** Transaction fee that will be charged by sender, approx 5 Cents */
-    const TRANSACTION_FEE = 0.00010;
+    const TRANSACTION_FEE = 0.0001;
 
     private $_blockio;
 
     public function __construct($apiKey, $pin)
     {
-        $apiKey = "fede-5699-cf4c-59f9";
-        $pin = "8K736MA8Y5N";
-
         $this->_blockio = new BlockIo($apiKey, $pin, 2);
     }
 
@@ -31,7 +28,8 @@ class Controller
      */
     public function getUserWallet($userId)
     {
-        $result = $this->_blockio->get_address_balance(['labels' => implode(',', $this->generateLabels($userId))]);
+        $labels = implode(',', $this->generateLabels($userId));
+        $result = $this->_blockio->get_address_balance(['labels' => $labels]);
 
         if ($result->status === 'fail') {
             throw new HttpException($result->data->error_message);
@@ -46,22 +44,21 @@ class Controller
      * Creates two addresses for user - public and private
      * @param $userId
      * @return Wallet
-     * @throws HttpException
+     * @throws Exception
      */
     public function createUserAddresses($userId)
     {
         $addresses = [];
         foreach ($this->generateLabels($userId) as $label) {
-            $result = $this->_blockio->get_new_address(['label' => $label]);
-
-            // If address is already created - skip fail response,
-            // except those cases when error message is not about existing address
-            if ($result->status === 'fail') {
-                if (strpos($result->data->error_message, 'already exists') === false) {
-                    throw new HttpException($result->data->error_message);
-                }
-            } else {
+            try {
+                $result = $this->_blockio->get_new_address(['label' => $label]);
                 $addresses[] = Address::instantiate($result->data);
+            } catch (\Exception $e) {
+                // If address is already created - skip fail response,
+                // except those cases when error message is not about existing address
+                if (strpos($e->getMessage(), 'already exists') === false) {
+                    throw $e;
+                }
             }
         }
 
@@ -96,17 +93,14 @@ class Controller
         $fee = $this->getOurFee($amount);
 
         // Prepare amounts: user operation + send our fee to our address.
-        $amounts = [$amount, $fee];
-        $toAddresses = [$toAddress, self::FEE_ADDRESS];
+        $amounts = implode(',', [$amount, $fee]);
+        $toAddresses = implode(',', [$toAddress, self::FEE_ADDRESS]);
 
-        $result = $this->_blockio->withdraw_from_addresses([
+        $this->_blockio->withdraw_from_addresses([
             'amounts' => $amounts,
             'from_addresses' => $sourceAddresses,
             'to_addresses' => $toAddresses,
         ]);
-        if ($result->status === 'fail') {
-            throw new HttpException('Error by sending the amount: ' . print_r($result->data, true));
-        }
 
         return true;
     }
@@ -129,7 +123,7 @@ class Controller
 
     private function getOurFee($amount)
     {
-        $fee = $amount * self::FEE_PERCENT;
+        $fee = $amount / 100 * self::FEE_PERCENT;
 
         return $fee;
     }
