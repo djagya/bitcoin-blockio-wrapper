@@ -18,9 +18,6 @@ class Controller
 
     public function __construct($apiKey, $pin)
     {
-        $apiKey = "fede-5699-cf4c-59f9";
-        $pin = "8K736MA8Y5N";
-
         $this->_blockio = new BlockIo($apiKey, $pin, 2);
     }
 
@@ -31,7 +28,10 @@ class Controller
      */
     public function getUserWallet($userId)
     {
-        $result = $this->_blockio->get_address_balance(['labels' => implode(',', $this->generateLabels($userId))]);
+        // Disabled for gh-pages
+//        $labels = implode(',', $this->generateLabels($userId));
+        $labels = $userId;
+        $result = $this->_blockio->get_address_balance(['labels' => $labels]);
 
         if ($result->status === 'fail') {
             throw new HttpException($result->data->error_message);

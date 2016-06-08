@@ -1,6 +1,5 @@
-/**
- * Created by danil on 08.06.16.
- */
+var SERVER_URL = 'http://localhost:8000';
+
 $(function () {
     $('.js-amount').on('input', function () {
         var feePercent = 1,
@@ -13,4 +12,19 @@ $(function () {
 
         $('.js-total').val(value);
     });
+
+    $('.js-balance').each(function (k, el) {
+        updateBalance($(el));
+    });
+
+    function updateBalance($el) {
+        var label = $el.parents('.tab-pane').attr('id'),
+            $balance = $el.find('.balance'),
+            $pending = $el.find('.pending');
+
+        $.get(SERVER_URL + '?action=balance&label=' + label, function (data) {
+            $balance.text(data.balance);
+            $pending.text(data.pending);
+        });
+    }
 });
