@@ -1,0 +1,5 @@
+{
+    "require": {
+        "block_io-php/block_io-php": "^1.1"
+    }
+}
