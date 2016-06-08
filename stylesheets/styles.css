@@ -158,6 +158,11 @@ img {
     max-width: 100%;
 }
 
+button[type="submit"] {
+    display: block;
+    margin: auto;
+}
+
 header {
     width: 270px;
     margin: auto;
@@ -245,6 +250,7 @@ footer {
     margin: auto;
     bottom: 50px;
     -webkit-font-smoothing: subpixel-antialiased;
+    text-align: center;
 }
 
 @media print, screen and (max-width: 960px) {
