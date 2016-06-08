@@ -6,11 +6,15 @@ $(function () {
             transactionFee = 0.0001,
             value = parseFloat($(this).val());
 
-        value += value / 100 * feePercent;
+        value += transactionFee + (value / 100 * feePercent);
         value += transactionFee;
         value = Number((value).toFixed(8));
 
         $('.js-total').val(value);
+    });
+
+    $('.js-amount').each(function (k, el) {
+        $(el).trigger('input');
     });
 
     $('.js-balance').each(function (k, el) {
@@ -27,4 +31,26 @@ $(function () {
             $pending.text(data.pending);
         });
     }
+
+    $('form').submit(function (e) {
+        e.preventDefault();
+
+        if (!$(this).data('sending')) {
+            $(this).data('sending', true);
+
+            $.ajax({
+                type: 'post',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function (data) {
+                    $('.js-balance').each(function (k, el) {
+                        updateBalance($(el));
+                    });
+                },
+                error: function () {
+                    location.reload();
+                }
+            });
+        }
+    });
 });

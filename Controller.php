@@ -28,7 +28,9 @@ class Controller
      */
     public function getUserWallet($userId)
     {
-        $labels = implode(',', $this->generateLabels($userId));
+        // Disabled for gh-pages
+//        $labels = implode(',', $this->generateLabels($userId));
+        $labels = $userId;
         $result = $this->_blockio->get_address_balance(['labels' => $labels]);
 
         if ($result->status === 'fail') {

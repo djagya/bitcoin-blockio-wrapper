@@ -45,19 +45,20 @@
                         <b>Pending:</b> <span class="pending"></span>
                     </p>
 
-                    <form action="http://localhost:8000" method="post">
+                    <form action="http://localhost:8000?action=send&label=test-user-1" method="post">
                         <div class="form-group">
                             <label for="address">Address</label>
                             <input type="text" class="form-control" id="address"
-                                   value="2N8iBNLN9UVNoJtuoKpeM8JejXUuzFY6rcz" disabled>
+                                   value="2N8iBNLN9UVNoJtuoKpeM8JejXUuzFY6rcz" name="address" readonly>
                         </div>
                         <div class="form-group">
                             <label for="amount">Amount</label>
-                            <input type="number" class="js-amount form-control" id="amount" value="0.0001">
+                            <input type="number" step="any" min="0,00002" class="js-amount form-control" id="amount"
+                                   value="0.0001" name="amount">
                         </div>
                         <div class="form-group">
                             <label for="total">Total amount (1% fee + transaction fee)</label>
-                            <input type="number" class="js-total form-control" id="total">
+                            <input type="text" class="js-total form-control" id="total" readonly>
                         </div>
 
                         <button type="submit" class="btn btn-default">Send</button>
@@ -73,19 +74,20 @@
                         <b>Pending:</b> <span class="pending"></span>
                     </p>
 
-                    <form action="http://localhost:8000" method="post">
+                    <form action="http://localhost:8000?action=send&label=test-user-2" method="post">
                         <div class="form-group">
                             <label for="address2">Address</label>
                             <input type="text" class="form-control" id="address2"
-                                   value="2N8zvpPT3o8j4PEUNGfj59TzgYApUQefi6g" disabled>
+                                   value="2N8zvpPT3o8j4PEUNGfj59TzgYApUQefi6g" name="address" readonly>
                         </div>
                         <div class="form-group">
                             <label for="amount2">Amount</label>
-                            <input type="number" class="js-amount form-control" id="amount2" value="0.0001">
+                            <input type="number" step="any" min="0,00002" class="js-amount form-control" id="amount2"
+                                   value="0.0001" name="amount">
                         </div>
                         <div class="form-group">
                             <label for="total2">Total amount (1% fee + transaction fee)</label>
-                            <input type="number" class="js-total form-control" id="total2">
+                            <input type="text" class="js-total form-control" id="total2" readonly>
                         </div>
 
                         <button type="submit" class="btn btn-default">Send</button>
