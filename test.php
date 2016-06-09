@@ -7,15 +7,15 @@ $version = 2; // the API version to use
 
 $block_io = new BlockIo($apiKey, $pin, $version);
 //
-//$block_io->get_new_address(['label' => 'test-user-1']);
-//$block_io->get_new_address(['label' => 'test-user-2']);
+//var_dump($block_io->get_address_balance(['labels' => 'test-user-1'])->data);
+var_dump($block_io->get_address_balance(['labels' => 'test-user-2'])->data);
 //var_dump($block_io->get_new_address(['label' => 'fees'])->data);
 
-$block_io->withdraw_from_labels([
-    'amounts' => '0.009',
-    'from_labels' => 'default',
-    'to_labels' => 'test-user-1',
-]);
+//$block_io->withdraw_from_labels([
+//    'amounts' => '0.009',
+//    'from_labels' => 'default',
+//    'to_labels' => 'test-user-1',
+//]);
 
 //$balance = $block_io->get_balance();
 //var_dump($balance);
