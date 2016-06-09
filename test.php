@@ -1,15 +1,25 @@
 <?php
 require_once 'vendor/autoload.php';
 
-$apiKey = "fede-5699-cf4c-59f9";
-$pin = "8K736MA8Y5N";
+$apiKey = "5867-ba4c-0d7e-b0a4";
+$pin = "3498g9ijij";
 $version = 2; // the API version to use
 
 $block_io = new BlockIo($apiKey, $pin, $version);
+//
+//$block_io->get_new_address(['label' => 'test-user-1']);
+//$block_io->get_new_address(['label' => 'test-user-2']);
+//var_dump($block_io->get_new_address(['label' => 'fees'])->data);
 
-$balance = $block_io->get_balance();
-var_dump($balance);
-echo "Confirmed Balance: " . $balance->data->available_balance . "\n";
+$block_io->withdraw_from_labels([
+    'amounts' => '0.009',
+    'from_labels' => 'default',
+    'to_labels' => 'test-user-1',
+]);
+
+//$balance = $block_io->get_balance();
+//var_dump($balance);
+//echo "Confirmed Balance: " . $balance->data->available_balance . "\n";
 
 // todo: request pass every 5 minutes on the transactions page OR transaction
 // send fees to the 'default' address OR to another wallet (better)

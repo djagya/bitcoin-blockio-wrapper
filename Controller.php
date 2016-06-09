@@ -9,7 +9,7 @@ class Controller
     /** How much to collect from users transactions */
     const FEE_PERCENT = 1;
     /** Address where we send collected from transactions fee */
-    const FEE_ADDRESS = '2NGXbdMNkVpprrFM34nSh7VQnAteagwncak';
+    const FEE_ADDRESS = '2N7DV7g752P6wAyi2NYqNawTNhCw4tTj8iT';
 
     /** Transaction fee that will be charged by sender, approx 5 Cents */
     const TRANSACTION_FEE = 0.0001;

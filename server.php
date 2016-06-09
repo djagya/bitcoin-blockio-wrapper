@@ -15,7 +15,7 @@ if (empty($_GET['label'])) {
 }
 $label = $_GET['label'];
 
-$controller = new Controller('fede-5699-cf4c-59f9', '8K736MA8Y5N');
+$controller = new Controller('5867-ba4c-0d7e-b0a4', '3498g9ijij');
 
 if ($_GET['action'] === 'balance') {
     $wallet = $controller->getUserWallet($_GET['label']);
