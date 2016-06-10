@@ -8,11 +8,14 @@ class Controller
     const MINIMAL_SEND_VALUE = 0.00002;
     /** How much to collect from users transactions */
     const FEE_PERCENT = 1;
+    const MIN_FEE = 0.0001;
     /** Address where we send collected from transactions fee */
     const FEE_ADDRESS = '2N7DV7g752P6wAyi2NYqNawTNhCw4tTj8iT';
 
     /** Transaction fee that will be charged by sender, approx 5 Cents */
     const TRANSACTION_FEE = 0.0001;
+
+    const TAKE_TRANSACTION_FEE_FROM_SENDER = false;
 
     private $_blockio;
 
@@ -92,10 +95,16 @@ class Controller
         }, $wallet->addresses);
         $sourceAddresses = implode(',', $sourceAddresses);
 
-        $fee = sprintf('%f', $this->getOurFee($amount));
+        // Fees.
+        $ourFee = sprintf('%f', $this->getOurFee($amount));
+
+        // If we take transaction fees from the receiver, then we need to decrease sent amount.
+        if (!self::TAKE_TRANSACTION_FEE_FROM_SENDER) {
+            $amount -= self::TRANSACTION_FEE * 2;
+        }
 
         // Prepare amounts: user operation + send our fee to our address.
-        $amounts = implode(',', [$amount, $fee]);
+        $amounts = implode(',', [$amount, $ourFee]);
         $toAddresses = implode(',', [$toAddress, self::FEE_ADDRESS]);
 
         $this->_blockio->withdraw_from_addresses([
@@ -108,7 +117,7 @@ class Controller
     }
 
     /**
-     * Returns calculated total amount that will be sent: transaction fee, our fee.
+     * Returns calculated total amount that will be sent: transaction fee (if from sender), our fee.
      * @param $sendAmount
      * @return float
      */
@@ -117,16 +126,24 @@ class Controller
         $totalAmount = (float)$sendAmount;
         // First - our fee.
         $totalAmount += $this->getOurFee($sendAmount);
+
         // Transaction fee.
-        $totalAmount += self::TRANSACTION_FEE;
+        if (self::TAKE_TRANSACTION_FEE_FROM_SENDER) {
+            $totalAmount += self::TRANSACTION_FEE;
+        }
 
         return $totalAmount;
     }
 
     private function getOurFee($amount)
     {
-        // We have to add transaction fee, because our fee will be sent in separate transaction.
-        $fee = self::TRANSACTION_FEE + ($amount / 100 * self::FEE_PERCENT);
+        $percentValue = $amount / 100 * self::FEE_PERCENT;
+        if (self::TAKE_TRANSACTION_FEE_FROM_SENDER) {
+            // We have to add transaction fee, because our fee will be sent in separate transaction.
+            $fee = self::TRANSACTION_FEE + $percentValue;
+        } else {
+            $fee = min(self::MIN_FEE, $percentValue);
+        }
 
         return $fee;
     }
