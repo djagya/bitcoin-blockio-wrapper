@@ -4,13 +4,19 @@ $(function () {
     $('.js-amount').on('input', function () {
         var feePercent = 1,
             transactionFee = 0.0001,
-            value = parseFloat($(this).val());
+            value = parseFloat($(this).val()),
+            $totalInput = $(this).parents('form').find('.js-total'),
+            $receiverInput = $(this).parents('form').find('.js-total-receiver'),
+            receiverValue;
 
-        value += transactionFee + (value / 100 * feePercent);
-        value += transactionFee;
+        value += value / 100 * feePercent;
+        receiverValue = value - transactionFee * 2;
+
         value = Number((value).toFixed(8));
+        receiverValue = Number((receiverValue).toFixed(8));
 
-        $('.js-total').val(value);
+        $totalInput.val(value);
+        $receiverInput.val(receiverValue);
     });
 
     $('.js-amount').each(function (k, el) {

@@ -57,8 +57,10 @@
                                    value="0.0001" name="amount">
                         </div>
                         <div class="form-group">
-                            <label for="total">Total amount (1% fee + transaction fee)</label>
+                            <label for="total">Total amount (1% fee, transaction fee (0.0002) will be deducted from the
+                                receiver)</label>
                             <input type="text" class="js-total form-control" id="total" readonly>
+                            <input type="text" class="js-total-receiver form-control" readonly>
                         </div>
 
                         <button type="submit" class="btn btn-default">Send</button>
@@ -86,8 +88,10 @@
                                    value="0.0001" name="amount">
                         </div>
                         <div class="form-group">
-                            <label for="total2">Total amount (1% fee + transaction fee)</label>
+                            <label for="total2">Total amount (1% fee, transaction fee (0.0002) will be deducted from the
+                                receiver)</label>
                             <input type="text" class="js-total form-control" id="total2" readonly>
+                            <input type="text" class="js-total-receiver form-control" readonly>
                         </div>
 
                         <button type="submit" class="btn btn-default">Send</button>
