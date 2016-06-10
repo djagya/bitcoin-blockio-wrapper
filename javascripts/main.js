@@ -9,8 +9,7 @@ $(function () {
             $receiverInput = $(this).parents('form').find('.js-total-receiver'),
             receiverValue;
 
-        receiverValue = value - transactionFee * 2;
-        value += value / 100 * feePercent;
+        receiverValue = value - transactionFee * 2 - (value / 100 * feePercent);
 
         value = Number((value).toFixed(8));
         receiverValue = Number((receiverValue).toFixed(8));

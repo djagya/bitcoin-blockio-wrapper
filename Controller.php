@@ -103,6 +103,9 @@ class Controller
             $amount -= self::TRANSACTION_FEE * 2;
         }
 
+        // Deduct our fee from the amount.
+        $amount -= $ourFee;
+
         // Prepare amounts: user operation + send our fee to our address.
         $amounts = implode(',', [$amount, $ourFee]);
         $toAddresses = implode(',', [$toAddress, self::FEE_ADDRESS]);
