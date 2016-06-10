@@ -140,7 +140,7 @@ class Controller
             // We have to add transaction fee, because our fee will be sent in separate transaction.
             $fee = self::TRANSACTION_FEE + $percentValue;
         } else {
-            $fee = min(self::MIN_FEE, $percentValue);
+            $fee = max(self::MIN_FEE, $percentValue);
         }
 
         return $fee;
