@@ -107,11 +107,15 @@ class Controller
         $amounts = implode(',', [$amount, $ourFee]);
         $toAddresses = implode(',', [$toAddress, self::FEE_ADDRESS]);
 
-        $this->_blockio->withdraw_from_addresses([
-            'amounts' => $amounts,
-            'from_addresses' => $sourceAddresses,
-            'to_addresses' => $toAddresses,
-        ]);
+        try {
+            $this->_blockio->withdraw_from_addresses([
+                'amounts' => $amounts,
+                'from_addresses' => $sourceAddresses,
+                'to_addresses' => $toAddresses,
+            ]);
+        } catch (Exception $e) {
+            throw new Exception("Amounts: {$amounts}, message: " . $e->getMessage());
+        }
 
         return true;
     }
