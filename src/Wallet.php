@@ -1,4 +1,13 @@
 <?php
+/**
+ * Wallet class.
+ *
+ * @copyright Copyright (c) 2016 Danil Zakablukovskii
+ * @package djagya/bitcoin
+ * @author Danil Zakablukovskii <danil.kabluk@gmail.com>
+ */
+
+namespace djagya\bitcoin;
 
 /**
  * @author danil danil.kabluk@gmail.com
@@ -13,10 +22,10 @@ class Wallet
     public $addresses = [];
 
     /**
-     * @param stdClass $rawData Response from block.io
+     * @param \stdClass $rawData Response from block.io
      * @return Wallet
      */
-    public static function instantiate(stdClass $rawData)
+    public static function instantiate(\stdClass $rawData)
     {
         $wallet = new self;
         $wallet->availableBalance = (float)$rawData->available_balance;

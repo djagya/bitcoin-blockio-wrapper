@@ -1,4 +1,13 @@
 <?php
+/**
+ * Address class.
+ *
+ * @copyright Copyright (c) 2016 Danil Zakablukovskii
+ * @package djagya/bitcoin
+ * @author Danil Zakablukovskii <danil.kabluk@gmail.com>
+ */
+
+namespace djagya\bitcoin;
 
 /**
  * @author danil danil.kabluk@gmail.com
@@ -15,10 +24,10 @@ class Address
     public $pendingReceivedBalance = 0;
 
     /**
-     * @param stdClass $rawData Response from block.io
+     * @param \stdClass $rawData Response from block.io
      * @return Address
      */
-    public static function instantiate($rawData)
+    public static function instantiate(\stdClass $rawData)
     {
         $address = new self;
         $address->label = $rawData->label;
