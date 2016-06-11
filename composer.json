@@ -1,4 +1,14 @@
 {
+  "name": "djagya/bitcoin_blockio_wrapper",
+  "description": "Simple wrapper for Block.io API for multiple addresses for multiple users management purposes.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "danil zakablukovskii",
+      "email": "danil.kabluk@gmail.com"
+    }
+  ],
     "require": {
         "block_io-php/block_io-php": "^1.1"
     }
