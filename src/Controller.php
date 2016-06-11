@@ -153,7 +153,7 @@ class Controller
         return $fee;
     }
 
-    private function generateLabels($userId)
+    protected function generateLabels($userId)
     {
         return ["user.{$userId}.private", "user.{$userId}.public"];
     }
