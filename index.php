@@ -4,12 +4,12 @@ require_once 'Controller.php';
 
 header('Access-Control-Allow-Origin: *');
 
-if (empty($_GET['action'])) {
+if (empty($_GET['action']) || !in_array($_GET['action'], ['balance', 'send'])) {
     throw new Exception('Not found', 404);
 }
 
-if (empty($_GET['label'])) {
-    throw new Exception('Label missing', 400);
+if (empty($_GET['label']) || !in_array($_GET['label'], ['test-user-1', 'test-user-2'])) {
+    throw new Exception('Bad request', 400);
 }
 $label = $_GET['label'];
 
