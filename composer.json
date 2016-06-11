@@ -1,5 +1,5 @@
 {
-  "name": "djagya/bitcoin_blockio_wrapper",
+  "name": "djagya/bitcoin-blockio-wrapper",
   "description": "Simple wrapper for Block.io API for multiple addresses for multiple users management purposes. Created for personal purposes.",
   "version": "0.1",
   "keywords": [
