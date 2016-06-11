@@ -52,12 +52,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/djagya/bitcoin-blockio-wrapper.git",
-                "reference": "5b5a4691044ce1dfb5bc9eb4b5bad28ca9b141f2"
+                "reference": "864e2a91abe9c3db32d4a67c493acf4d5638da3a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/djagya/bitcoin-blockio-wrapper/zipball/5b5a4691044ce1dfb5bc9eb4b5bad28ca9b141f2",
-                "reference": "5b5a4691044ce1dfb5bc9eb4b5bad28ca9b141f2",
+                "url": "https://api.github.com/repos/djagya/bitcoin-blockio-wrapper/zipball/864e2a91abe9c3db32d4a67c493acf4d5638da3a",
+                "reference": "864e2a91abe9c3db32d4a67c493acf4d5638da3a",
                 "shasum": ""
             },
             "require": {
@@ -86,7 +86,7 @@
                 "block.io",
                 "wallet"
             ],
-            "time": "2016-06-11 09:43:32"
+            "time": "2016-06-11 10:01:42"
         }
     ],
     "packages-dev": [],

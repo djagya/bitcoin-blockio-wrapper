@@ -1,5 +1,6 @@
 <?php
 require_once 'vendor/autoload.php';
+require_once 'Controller.php';
 
 header('Access-Control-Allow-Origin: *');
 
