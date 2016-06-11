@@ -4,12 +4,12 @@ require_once 'Controller.php';
 
 header('Access-Control-Allow-Origin: *');
 
-if (!$_GET['action']) {
-    throw new HttpException('Not found', 404);
+if (empty($_GET['action'])) {
+    throw new \HttpException('Not found', 404);
 }
 
 if (empty($_GET['label'])) {
-    throw new HttpException('Label missing', 400);
+    throw new \HttpException('Label missing', 400);
 }
 $label = $_GET['label'];
 
