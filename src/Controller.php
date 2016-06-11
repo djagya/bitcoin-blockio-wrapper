@@ -1,4 +1,13 @@
 <?php
+/**
+ * Controller class.
+ *
+ * @copyright Copyright (c) 2016 Danil Zakablukovskii
+ * @package djagya/bitcoin
+ * @author Danil Zakablukovskii <danil.kabluk@gmail.com>
+ */
+
+namespace djagya\bitcoin;
 
 /**
  * @author danil danil.kabluk@gmail.com
@@ -10,7 +19,7 @@ class Controller
     const FEE_PERCENT = 1;
     const MIN_FEE = 0.0001;
     /** Address where we send collected from transactions fee */
-    const FEE_ADDRESS = '2NGXbdMNkVpprrFM34nSh7VQnAteagwncak';
+    const FEE_ADDRESS = '';
 
     /** Transaction fee that will be charged by sender, approx 5 Cents */
     const TRANSACTION_FEE = 0.0001;
@@ -21,22 +30,18 @@ class Controller
 
     public function __construct($apiKey, $pin)
     {
-        $this->_blockio = new BlockIo($apiKey, $pin, 2);
+        $this->_blockio = new \BlockIo($apiKey, $pin, 2);
     }
 
     /**
      * @param $userId
      * @return Wallet
-     * @throws HttpException
+     * @throws \HttpException
      */
     public function getUserWallet($userId)
     {
         $labels = implode(',', $this->generateLabels($userId));
         $result = $this->_blockio->get_address_balance(['labels' => $labels]);
-
-        if ($result->status === 'fail') {
-            throw new HttpException($result->data->error_message);
-        }
 
         $wallet = Wallet::instantiate($result->data);
 
@@ -47,7 +52,7 @@ class Controller
      * Creates two addresses for user - public and private
      * @param $userId
      * @return Wallet
-     * @throws Exception
+     * @throws \Exception
      */
     public function createUserAddresses($userId)
     {
@@ -66,7 +71,7 @@ class Controller
         }
 
         if (!$addresses) {
-            throw new BadMethodCallException('Addresses are already created, use Controller::getUserAddresses() isntead');
+            throw new \BadMethodCallException('Addresses are already created, use Controller::getUserAddresses() isntead');
         }
 
         $wallet = new Wallet();
@@ -76,12 +81,11 @@ class Controller
     }
 
     /**
-     * TODO: we don't need to add transaction fee - it will be deducted automatically
+     * We don't need to add transaction fee to the sent amount - it will be deducted automatically.
      * @param $userId
      * @param $toAddress
      * @param float $amount
      * @return bool
-     * @throws HttpException
      */
     public function send($userId, $toAddress, $amount)
     {
