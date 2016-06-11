@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "39f5ed5019f719a94c132bce2b37ada8",
-    "content-hash": "f18bf5569e55e5c2a368252146064cfb",
+    "hash": "84d9a8444eacc825c2e5659b04eb339f",
+    "content-hash": "230982eb3fa0d62f124220ec823e5575",
     "packages": [
         {
             "name": "block_io-php/block_io-php",
@@ -45,14 +45,58 @@
                 "litecoin"
             ],
             "time": "2015-01-30 03:32:20"
+        },
+        {
+            "name": "djagya/bitcoin-blockio-wrapper",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/djagya/bitcoin-blockio-wrapper.git",
+                "reference": "5b5a4691044ce1dfb5bc9eb4b5bad28ca9b141f2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/djagya/bitcoin-blockio-wrapper/zipball/5b5a4691044ce1dfb5bc9eb4b5bad28ca9b141f2",
+                "reference": "5b5a4691044ce1dfb5bc9eb4b5bad28ca9b141f2",
+                "shasum": ""
+            },
+            "require": {
+                "block_io-php/block_io-php": "^1.1",
+                "php": ">=5.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "djagya\\bitcoin\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "danil zakablukovskii",
+                    "email": "danil.kabluk@gmail.com"
+                }
+            ],
+            "description": "Simple wrapper for Block.io API for multiple addresses for multiple users management purposes. Created for personal purposes.",
+            "keywords": [
+                "bitcoin",
+                "block.io",
+                "wallet"
+            ],
+            "time": "2016-06-11 09:43:32"
         }
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=5.5"
+    },
     "platform-dev": []
 }
