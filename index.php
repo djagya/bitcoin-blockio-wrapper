@@ -1,6 +1,4 @@
 <?php
-use djagya\bitcoin\Controller;
-
 require_once 'vendor/autoload.php';
 
 header('Access-Control-Allow-Origin: *');
@@ -14,7 +12,7 @@ if (empty($_GET['label'])) {
 }
 $label = $_GET['label'];
 
-$controller = new Controller('', '');
+$controller = new \Controller('', '');
 
 if ($_GET['action'] === 'balance') {
     $wallet = $controller->getUserWallet($_GET['label']);
