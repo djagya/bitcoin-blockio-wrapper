@@ -14,17 +14,16 @@ namespace djagya\bitcoin;
  */
 class Controller
 {
-    const MINIMAL_SEND_VALUE = 0.00002;
-    /** How much to collect from users transactions */
-    const FEE_PERCENT = 1;
-    const MIN_FEE = 0.0001;
-    /** Address where we send collected from transactions fee */
-    const FEE_ADDRESS = '';
-
     /** Transaction fee that will be charged by sender, approx 5 Cents */
     const TRANSACTION_FEE = 0.0001;
 
-    const TAKE_TRANSACTION_FEE_FROM_SENDER = true;
+    static public $minimalSendValue = 0.0003;
+    /** How much to collect from users transactions */
+    static public $feePercent = 1;
+    static public $minFee = 0.0001;
+    /** Address where we send collected from transactions fee */
+    static public $feeAddress = '';
+    static public $transactionFeeFromSender = true;
 
     private $_blockio;
 
@@ -101,7 +100,7 @@ class Controller
         $ourFee = sprintf('%f', $this->getOurFee($amount));
 
         // If we take transaction fees from the receiver, then we need to decrease sent amount.
-        if (!self::TAKE_TRANSACTION_FEE_FROM_SENDER) {
+        if (!self::$transactionFeeFromSender) {
             $amount -= self::TRANSACTION_FEE * 2;
         }
 
@@ -110,7 +109,7 @@ class Controller
 
         // Prepare amounts: user operation + send our fee to our address.
         $amounts = implode(',', [$amount, $ourFee]);
-        $toAddresses = implode(',', [$toAddress, self::FEE_ADDRESS]);
+        $toAddresses = implode(',', [$toAddress, self::$feeAddress]);
 
         $this->_blockio->withdraw_from_addresses([
             'amounts' => $amounts,
@@ -133,7 +132,7 @@ class Controller
         $totalAmount += $this->getOurFee($sendAmount);
 
         // Transaction fee.
-        if (self::TAKE_TRANSACTION_FEE_FROM_SENDER) {
+        if (self::$transactionFeeFromSender) {
             $totalAmount += self::TRANSACTION_FEE;
         }
 
@@ -142,12 +141,12 @@ class Controller
 
     private function getOurFee($amount)
     {
-        $percentValue = $amount / 100 * self::FEE_PERCENT;
-        if (self::TAKE_TRANSACTION_FEE_FROM_SENDER) {
+        $percentValue = $amount / 100 * self::$feePercent;
+        if (self::$transactionFeeFromSender) {
             // We have to add transaction fee, because our fee will be sent in separate transaction.
             $fee = self::TRANSACTION_FEE + $percentValue;
         } else {
-            $fee = max(self::MIN_FEE, $percentValue);
+            $fee = max(self::$minFee, $percentValue);
         }
 
         return $fee;
@@ -155,6 +154,29 @@ class Controller
 
     protected function generateLabels($userId)
     {
-        return ["user.{$userId}.private", "user.{$userId}.public"];
+        return ["user.{$userId}"];
+    }
+
+    /**
+     * @param $userId
+     * @return Transaction[] ordered by time desc
+     */
+    public function getTransactions($userId)
+    {
+        $labels = $this->generateLabels($userId);
+        $received = $this->_blockio->get_address_balance(['type' => 'received', 'labels' => $labels]);
+        $sent = $this->_blockio->get_address_balance(['type' => 'sent', 'labels' => $labels]);
+
+        $transactions = [];
+        foreach (array_merge($received->data->txs, $sent->data->txs) as $transaction) {
+            $transactions[] = Transaction::instantiate($transaction);
+        }
+
+        // Sort transactions by time desc.
+        usort($transactions, function (Transaction $a, Transaction $b) {
+            return ($a->time > $b->time) ? -1 : 1;
+        });
+
+        return $transactions;
     }
 }
