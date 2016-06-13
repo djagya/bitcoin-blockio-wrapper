@@ -154,7 +154,7 @@ class Controller
 
     protected function generateLabels($userId)
     {
-        return ["user.{$userId}"];
+        return ['test-user-1'];
     }
 
     /**
@@ -163,9 +163,9 @@ class Controller
      */
     public function getTransactions($userId)
     {
-        $labels = $this->generateLabels($userId);
-        $received = $this->_blockio->get_address_balance(['type' => 'received', 'labels' => $labels]);
-        $sent = $this->_blockio->get_address_balance(['type' => 'sent', 'labels' => $labels]);
+        $labels = implode(',', $this->generateLabels($userId));
+        $received = $this->_blockio->get_transactions(['type' => 'received', 'labels' => $labels]);
+        $sent = $this->_blockio->get_transactions(['type' => 'sent', 'labels' => $labels]);
 
         $transactions = [];
         foreach (array_merge($received->data->txs, $sent->data->txs) as $transaction) {
