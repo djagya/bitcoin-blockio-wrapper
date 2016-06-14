@@ -154,7 +154,7 @@ class Controller
 
     protected function generateLabels($userId)
     {
-        return ['test-user-1'];
+        return ["user.{$userId}"];
     }
 
     /**
