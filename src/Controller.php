@@ -23,7 +23,7 @@ class Controller
     static public $minFee = 0.0001;
     /** Address where we send collected from transactions fee */
     static public $feeAddress = '';
-    static public $transactionFeeFromSender = true;
+    static public $feesFromSender = true;
 
     private $_blockio;
 
@@ -99,13 +99,14 @@ class Controller
         // Fees.
         $ourFee = sprintf('%f', $this->getOurFee($amount));
 
-        // If we take transaction fees from the receiver, then we need to decrease sent amount.
-        if (!self::$transactionFeeFromSender) {
-            $amount -= self::TRANSACTION_FEE * 2;
+        // If we take fees from the receiver, then we need to decrease sent amount.
+        if (self::$feesFromSender) {
+            $amount += $ourFee;
+        } else {
+            // Deduct our fee and transaction fee from the amount.
+            $amount -= $ourFee;
+            $amount -= self::TRANSACTION_FEE;
         }
-
-        // Deduct our fee from the amount.
-        $amount -= $ourFee;
 
         // Prepare amounts: user operation + send our fee to our address.
         $amounts = implode(',', [$amount, $ourFee]);
@@ -128,11 +129,10 @@ class Controller
     public function getTotalCalculatedAmount($sendAmount)
     {
         $totalAmount = (float)$sendAmount;
-        // First - our fee.
-        $totalAmount += $this->getOurFee($sendAmount);
-
-        // Transaction fee.
-        if (self::$transactionFeeFromSender) {
+        if (self::$feesFromSender) {
+            // First - our fee.
+            $totalAmount += $this->getOurFee($sendAmount);
+            // Transaction fee.
             $totalAmount += self::TRANSACTION_FEE;
         }
 
@@ -142,12 +142,7 @@ class Controller
     private function getOurFee($amount)
     {
         $percentValue = $amount / 100 * self::$feePercent;
-        if (self::$transactionFeeFromSender) {
-            // We have to add transaction fee, because our fee will be sent in separate transaction.
-            $fee = self::TRANSACTION_FEE + $percentValue;
-        } else {
-            $fee = max(self::$minFee, $percentValue);
-        }
+        $fee = max(self::$minFee, $percentValue);
 
         return $fee;
     }
