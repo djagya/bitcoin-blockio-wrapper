@@ -100,9 +100,7 @@ class Controller
         $ourFee = sprintf('%f', $this->getOurFee($amount));
 
         // If we take fees from the receiver, then we need to decrease sent amount.
-        if (self::$feesFromSender) {
-            $amount += $ourFee;
-        } else {
+        if (!self::$feesFromSender) {
             // Deduct our fee and transaction fee from the amount.
             $amount -= $ourFee;
             $amount -= self::TRANSACTION_FEE;
