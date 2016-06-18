@@ -23,6 +23,7 @@ class Controller
     static public $minFee = 0.0001;
     /** Address where we send collected from transactions fee */
     static public $feeAddress = '';
+    static public $feeLabel = 'fees';
     static public $feesFromSender = true;
 
     private $_blockio;
@@ -88,14 +89,6 @@ class Controller
      */
     public function send($userId, $toAddress, $amount)
     {
-        $wallet = $this->getUserWallet($userId);
-
-        // Prepare user source addresses.
-        $sourceAddresses = array_map(function (Address $address) {
-            return $address->address;
-        }, $wallet->addresses);
-        $sourceAddresses = implode(',', $sourceAddresses);
-
         // Fees.
         $ourFee = sprintf('%f', $this->getOurFee($amount));
 
@@ -110,10 +103,35 @@ class Controller
         $amounts = implode(',', [$amount, $ourFee]);
         $toAddresses = implode(',', [$toAddress, self::$feeAddress]);
 
-        $this->_blockio->withdraw_from_addresses([
+        $this->_blockio->withdraw_from_labels([
             'amounts' => $amounts,
-            'from_addresses' => $sourceAddresses,
+            'from_labels' => implode($this->generateLabels($userId)),
             'to_addresses' => $toAddresses,
+        ]);
+
+        return true;
+    }
+
+    public function sendUsingLabels($userId, $toLabel, $amount)
+    {
+        // Fees.
+        $ourFee = sprintf('%f', $this->getOurFee($amount));
+
+        // If we take fees from the receiver, then we need to decrease sent amount.
+        if (!self::$feesFromSender) {
+            // Deduct our fee and transaction fee from the amount.
+            $amount -= $ourFee;
+            $amount -= self::TRANSACTION_FEE;
+        }
+
+        // Prepare amounts: user operation + send our fee to our address.
+        $amounts = implode(',', [$amount, $ourFee]);
+        $toLabels = implode(',', [$toLabel, self::$feeLabel]);
+
+        $this->_blockio->withdraw_from_labels([
+            'amounts' => $amounts,
+            'from_labels' => implode($this->generateLabels($userId)),
+            'to_labels' => $toLabels,
         ]);
 
         return true;
